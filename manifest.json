@@ -14,7 +14,7 @@
     "https://x.com/*"
   ],
   "background": {
-    "service_worker": "background.js"
+    "service_worker": "js/background.js"
   },
   "content_scripts": [
     {
@@ -23,7 +23,12 @@
         "https://x.com/*"
       ],
       "js": [
-        "content.js"
+        "js/content/svg-icons.js",
+        "js/content/tweet-extractor.js",
+        "js/content/button-creator.js",
+        "js/content/nostr-publisher.js",
+        "js/content/dom-observer.js",
+        "js/content/main.js"
       ],
       "run_at": "document_end",
       "world": "MAIN"
@@ -34,7 +39,7 @@
         "https://x.com/*"
       ],
       "js": [
-        "content-bridge.js"
+        "js/content-bridge.js"
       ],
       "run_at": "document_end",
       "world": "ISOLATED"
