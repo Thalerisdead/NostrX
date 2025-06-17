@@ -1,0 +1,1103 @@
+{
+  "summary": {
+    "high_risk": 10,
+    "medium_risk": 14,
+    "low_risk": 111,
+    "info": 21,
+    "total": 156
+  },
+  "findings": [
+    {
+      "severity": "MEDIUM",
+      "title": "Dangerous Permission: storage",
+      "description": "Access to extension storage",
+      "file": "manifest.json",
+      "line": 0
+    },
+    {
+      "severity": "MEDIUM",
+      "title": "Dangerous Permission: activeTab",
+      "description": "Access to active tab content",
+      "file": "manifest.json",
+      "line": 0
+    },
+    {
+      "severity": "MEDIUM",
+      "title": "Dangerous Permission: scripting",
+      "description": "Script injection capabilities",
+      "file": "manifest.json",
+      "line": 0
+    },
+    {
+      "severity": "MEDIUM",
+      "title": "Dangerous Permission: tabs",
+      "description": "Access to all browser tabs",
+      "file": "manifest.json",
+      "line": 0
+    },
+    {
+      "severity": "MEDIUM",
+      "title": "Broad Host Permission",
+      "description": "Permission for https://twitter.com/* allows broad access",
+      "file": "manifest.json",
+      "line": 0
+    },
+    {
+      "severity": "MEDIUM",
+      "title": "Broad Host Permission",
+      "description": "Permission for https://x.com/* allows broad access",
+      "file": "manifest.json",
+      "line": 0
+    },
+    {
+      "severity": "MEDIUM",
+      "title": "Missing CSP",
+      "description": "No Content Security Policy defined",
+      "file": "manifest.json",
+      "line": 0
+    },
+    {
+      "severity": "HIGH",
+      "title": "Dangerous Pattern: innerHTML\\s*=",
+      "description": "Use of innerHTML (potential XSS)",
+      "file": "content.js",
+      "line": 125
+    },
+    {
+      "severity": "HIGH",
+      "title": "Dangerous Pattern: innerHTML\\s*=",
+      "description": "Use of innerHTML (potential XSS)",
+      "file": "content.js",
+      "line": 301
+    },
+    {
+      "severity": "HIGH",
+      "title": "Dangerous Pattern: innerHTML\\s*=",
+      "description": "Use of innerHTML (potential XSS)",
+      "file": "content.js",
+      "line": 314
+    },
+    {
+      "severity": "HIGH",
+      "title": "Dangerous Pattern: innerHTML\\s*=",
+      "description": "Use of innerHTML (potential XSS)",
+      "file": "content.js",
+      "line": 324
+    },
+    {
+      "severity": "HIGH",
+      "title": "Dangerous Pattern: innerHTML\\s*=",
+      "description": "Use of innerHTML (potential XSS)",
+      "file": "content.js",
+      "line": 336
+    },
+    {
+      "severity": "MEDIUM",
+      "title": "Dangerous Pattern: window\\.postMessage",
+      "description": "PostMessage usage (review for security)",
+      "file": "content.js",
+      "line": 243
+    },
+    {
+      "severity": "MEDIUM",
+      "title": "Dangerous Pattern: window\\.postMessage",
+      "description": "PostMessage usage (review for security)",
+      "file": "content-bridge.js",
+      "line": 21
+    },
+    {
+      "severity": "MEDIUM",
+      "title": "Dangerous Pattern: window\\.postMessage",
+      "description": "PostMessage usage (review for security)",
+      "file": "content-bridge.js",
+      "line": 32
+    },
+    {
+      "severity": "MEDIUM",
+      "title": "Background Script Pattern: chrome\\.storage\\.",
+      "description": "Chrome storage usage",
+      "file": "background.js",
+      "line": 38
+    },
+    {
+      "severity": "MEDIUM",
+      "title": "Background Script Pattern: chrome\\.storage\\.",
+      "description": "Chrome storage usage",
+      "file": "background.js",
+      "line": 40
+    },
+    {
+      "severity": "MEDIUM",
+      "title": "Background Script Pattern: chrome\\.storage\\.",
+      "description": "Chrome storage usage",
+      "file": "background.js",
+      "line": 403
+    },
+    {
+      "severity": "MEDIUM",
+      "title": "Background Script Pattern: chrome\\.storage\\.",
+      "description": "Chrome storage usage",
+      "file": "background.js",
+      "line": 415
+    },
+    {
+      "severity": "HIGH",
+      "title": "Popup JS: innerHTML\\s*=",
+      "description": "Use of innerHTML (potential XSS)",
+      "file": "popup.js",
+      "line": 121
+    },
+    {
+      "severity": "HIGH",
+      "title": "Popup JS: innerHTML\\s*=",
+      "description": "Use of innerHTML (potential XSS)",
+      "file": "popup.js",
+      "line": 127
+    },
+    {
+      "severity": "HIGH",
+      "title": "Popup JS: innerHTML\\s*=",
+      "description": "Use of innerHTML (potential XSS)",
+      "file": "popup.js",
+      "line": 276
+    },
+    {
+      "severity": "HIGH",
+      "title": "Popup JS: innerHTML\\s*=",
+      "description": "Use of innerHTML (potential XSS)",
+      "file": "popup.js",
+      "line": 287
+    },
+    {
+      "severity": "INFO",
+      "title": "Nostr Relay Usage",
+      "description": "WebSocket relay connection: wss://relay.damu",
+      "file": "popup.js",
+      "line": 34
+    },
+    {
+      "severity": "INFO",
+      "title": "Nostr Relay Usage",
+      "description": "WebSocket relay connection: wss://relay.no",
+      "file": "popup.js",
+      "line": 35
+    },
+    {
+      "severity": "INFO",
+      "title": "Nostr Relay Usage",
+      "description": "WebSocket relay connection: wss://no",
+      "file": "popup.js",
+      "line": 36
+    },
+    {
+      "severity": "INFO",
+      "title": "Nostr Relay Usage",
+      "description": "WebSocket relay connection: wss://relay.current.fyi",
+      "file": "popup.js",
+      "line": 37
+    },
+    {
+      "severity": "INFO",
+      "title": "Nostr Relay Usage",
+      "description": "WebSocket relay connection: wss://no",
+      "file": "popup.js",
+      "line": 38
+    },
+    {
+      "severity": "INFO",
+      "title": "Nostr Relay Usage",
+      "description": "WebSocket relay connection: wss:// or w",
+      "file": "popup.js",
+      "line": 157
+    },
+    {
+      "severity": "INFO",
+      "title": "Nostr Relay Usage",
+      "description": "WebSocket relay connection: wss://relay.damu",
+      "file": "popup.js",
+      "line": 197
+    },
+    {
+      "severity": "INFO",
+      "title": "Nostr Relay Usage",
+      "description": "WebSocket relay connection: wss://relay.no",
+      "file": "popup.js",
+      "line": 198
+    },
+    {
+      "severity": "INFO",
+      "title": "Nostr Relay Usage",
+      "description": "WebSocket relay connection: wss://no",
+      "file": "popup.js",
+      "line": 199
+    },
+    {
+      "severity": "INFO",
+      "title": "Nostr Relay Usage",
+      "description": "WebSocket relay connection: wss://relay.current.fyi",
+      "file": "popup.js",
+      "line": 200
+    },
+    {
+      "severity": "INFO",
+      "title": "Nostr Relay Usage",
+      "description": "WebSocket relay connection: wss://no",
+      "file": "popup.js",
+      "line": 201
+    },
+    {
+      "severity": "HIGH",
+      "title": "Nostr Key Handling",
+      "description": "Private key handling detected",
+      "file": "background.js",
+      "line": 125
+    },
+    {
+      "severity": "INFO",
+      "title": "Nostr Relay Usage",
+      "description": "WebSocket relay connection: wss://relay.damu",
+      "file": "background.js",
+      "line": 4
+    },
+    {
+      "severity": "INFO",
+      "title": "Nostr Relay Usage",
+      "description": "WebSocket relay connection: wss://relay.no",
+      "file": "background.js",
+      "line": 5
+    },
+    {
+      "severity": "INFO",
+      "title": "Nostr Relay Usage",
+      "description": "WebSocket relay connection: wss://no",
+      "file": "background.js",
+      "line": 6
+    },
+    {
+      "severity": "INFO",
+      "title": "Nostr Relay Usage",
+      "description": "WebSocket relay connection: wss://relay.current.fyi",
+      "file": "background.js",
+      "line": 7
+    },
+    {
+      "severity": "INFO",
+      "title": "Nostr Relay Usage",
+      "description": "WebSocket relay connection: wss://no",
+      "file": "background.js",
+      "line": 8
+    },
+    {
+      "severity": "INFO",
+      "title": "Nostr Relay Usage",
+      "description": "WebSocket relay connection: wss://relay.damu",
+      "file": "content.js",
+      "line": 198
+    },
+    {
+      "severity": "INFO",
+      "title": "Nostr Relay Usage",
+      "description": "WebSocket relay connection: wss://relay.no",
+      "file": "content.js",
+      "line": 199
+    },
+    {
+      "severity": "INFO",
+      "title": "Nostr Relay Usage",
+      "description": "WebSocket relay connection: wss://no",
+      "file": "content.js",
+      "line": 200
+    },
+    {
+      "severity": "INFO",
+      "title": "Nostr Relay Usage",
+      "description": "WebSocket relay connection: wss://relay.current.fyi",
+      "file": "content.js",
+      "line": 201
+    },
+    {
+      "severity": "INFO",
+      "title": "Nostr Relay Usage",
+      "description": "WebSocket relay connection: wss://no",
+      "file": "content.js",
+      "line": 202
+    },
+    {
+      "severity": "LOW",
+      "title": "Potential Data Leakage",
+      "description": "Console logging (may leak sensitive data): console.log",
+      "file": "content-bridge.js",
+      "line": 3
+    },
+    {
+      "severity": "LOW",
+      "title": "Potential Data Leakage",
+      "description": "Console logging (may leak sensitive data): console.log",
+      "file": "content-bridge.js",
+      "line": 8
+    },
+    {
+      "severity": "LOW",
+      "title": "Potential Data Leakage",
+      "description": "Console logging (may leak sensitive data): console.log",
+      "file": "content-bridge.js",
+      "line": 18
+    },
+    {
+      "severity": "LOW",
+      "title": "Potential Data Leakage",
+      "description": "Console logging (may leak sensitive data): console.log",
+      "file": "popup.js",
+      "line": 221
+    },
+    {
+      "severity": "LOW",
+      "title": "Potential Data Leakage",
+      "description": "Console logging (may leak sensitive data): console.log",
+      "file": "popup.js",
+      "line": 230
+    },
+    {
+      "severity": "LOW",
+      "title": "Potential Data Leakage",
+      "description": "Console logging (may leak sensitive data): console.log",
+      "file": "popup.js",
+      "line": 242
+    },
+    {
+      "severity": "LOW",
+      "title": "Potential Data Leakage",
+      "description": "Console logging (may leak sensitive data): console.log",
+      "file": "popup.js",
+      "line": 247
+    },
+    {
+      "severity": "LOW",
+      "title": "Potential Data Leakage",
+      "description": "Console logging (may leak sensitive data): console.log",
+      "file": "popup.js",
+      "line": 253
+    },
+    {
+      "severity": "LOW",
+      "title": "Potential Data Leakage",
+      "description": "Console logging (may leak sensitive data): console.log",
+      "file": "popup.js",
+      "line": 268
+    },
+    {
+      "severity": "LOW",
+      "title": "Potential Data Leakage",
+      "description": "Console logging (may leak sensitive data): console.log",
+      "file": "alby-test.js",
+      "line": 4
+    },
+    {
+      "severity": "LOW",
+      "title": "Potential Data Leakage",
+      "description": "Console logging (may leak sensitive data): console.log",
+      "file": "alby-test.js",
+      "line": 7
+    },
+    {
+      "severity": "LOW",
+      "title": "Potential Data Leakage",
+      "description": "Console logging (may leak sensitive data): console.log",
+      "file": "alby-test.js",
+      "line": 10
+    },
+    {
+      "severity": "LOW",
+      "title": "Potential Data Leakage",
+      "description": "Console logging (may leak sensitive data): console.log",
+      "file": "alby-test.js",
+      "line": 11
+    },
+    {
+      "severity": "LOW",
+      "title": "Potential Data Leakage",
+      "description": "Console logging (may leak sensitive data): console.log",
+      "file": "alby-test.js",
+      "line": 12
+    },
+    {
+      "severity": "LOW",
+      "title": "Potential Data Leakage",
+      "description": "Console logging (may leak sensitive data): console.log",
+      "file": "alby-test.js",
+      "line": 15
+    },
+    {
+      "severity": "LOW",
+      "title": "Potential Data Leakage",
+      "description": "Console logging (may leak sensitive data): console.log",
+      "file": "alby-test.js",
+      "line": 18
+    },
+    {
+      "severity": "LOW",
+      "title": "Potential Data Leakage",
+      "description": "Console logging (may leak sensitive data): console.log",
+      "file": "alby-test.js",
+      "line": 21
+    },
+    {
+      "severity": "LOW",
+      "title": "Potential Data Leakage",
+      "description": "Console logging (may leak sensitive data): console.log",
+      "file": "alby-test.js",
+      "line": 33
+    },
+    {
+      "severity": "LOW",
+      "title": "Potential Data Leakage",
+      "description": "Console logging (may leak sensitive data): console.log",
+      "file": "alby-test.js",
+      "line": 34
+    },
+    {
+      "severity": "LOW",
+      "title": "Potential Data Leakage",
+      "description": "Console logging (may leak sensitive data): console.log",
+      "file": "alby-test.js",
+      "line": 38
+    },
+    {
+      "severity": "LOW",
+      "title": "Potential Data Leakage",
+      "description": "Console logging (may leak sensitive data): console.log",
+      "file": "alby-test.js",
+      "line": 41
+    },
+    {
+      "severity": "LOW",
+      "title": "Potential Data Leakage",
+      "description": "Console logging (may leak sensitive data): console.log",
+      "file": "alby-test.js",
+      "line": 42
+    },
+    {
+      "severity": "LOW",
+      "title": "Potential Data Leakage",
+      "description": "Console logging (may leak sensitive data): console.log",
+      "file": "alby-test.js",
+      "line": 43
+    },
+    {
+      "severity": "LOW",
+      "title": "Potential Data Leakage",
+      "description": "Console logging (may leak sensitive data): console.log",
+      "file": "alby-test.js",
+      "line": 44
+    },
+    {
+      "severity": "LOW",
+      "title": "Potential Data Leakage",
+      "description": "Console logging (may leak sensitive data): console.log",
+      "file": "alby-test.js",
+      "line": 45
+    },
+    {
+      "severity": "LOW",
+      "title": "Potential Data Leakage",
+      "description": "Console logging (may leak sensitive data): console.log",
+      "file": "alby-test.js",
+      "line": 46
+    },
+    {
+      "severity": "LOW",
+      "title": "Potential Data Leakage",
+      "description": "Console logging (may leak sensitive data): console.log",
+      "file": "alby-test.js",
+      "line": 50
+    },
+    {
+      "severity": "LOW",
+      "title": "Potential Data Leakage",
+      "description": "Console logging (may leak sensitive data): console.log",
+      "file": "alby-test.js",
+      "line": 53
+    },
+    {
+      "severity": "LOW",
+      "title": "Potential Data Leakage",
+      "description": "Console logging (may leak sensitive data): console.log",
+      "file": "alby-test.js",
+      "line": 56
+    },
+    {
+      "severity": "LOW",
+      "title": "Potential Data Leakage",
+      "description": "Console logging (may leak sensitive data): console.log",
+      "file": "alby-test.js",
+      "line": 59
+    },
+    {
+      "severity": "LOW",
+      "title": "Potential Data Leakage",
+      "description": "Console logging (may leak sensitive data): console.log",
+      "file": "popup-direct-test.js",
+      "line": 5
+    },
+    {
+      "severity": "LOW",
+      "title": "Potential Data Leakage",
+      "description": "Console logging (may leak sensitive data): console.log",
+      "file": "popup-direct-test.js",
+      "line": 10
+    },
+    {
+      "severity": "LOW",
+      "title": "Potential Data Leakage",
+      "description": "Console logging (may leak sensitive data): console.log",
+      "file": "popup-direct-test.js",
+      "line": 13
+    },
+    {
+      "severity": "LOW",
+      "title": "Potential Data Leakage",
+      "description": "Console logging (may leak sensitive data): console.log",
+      "file": "popup-direct-test.js",
+      "line": 21
+    },
+    {
+      "severity": "LOW",
+      "title": "Potential Data Leakage",
+      "description": "Console logging (may leak sensitive data): console.log",
+      "file": "popup-direct-test.js",
+      "line": 39
+    },
+    {
+      "severity": "LOW",
+      "title": "Potential Data Leakage",
+      "description": "Console logging (may leak sensitive data): console.log",
+      "file": "popup-direct-test.js",
+      "line": 50
+    },
+    {
+      "severity": "LOW",
+      "title": "Potential Data Leakage",
+      "description": "Console logging (may leak sensitive data): console.log",
+      "file": "background.js",
+      "line": 24
+    },
+    {
+      "severity": "LOW",
+      "title": "Potential Data Leakage",
+      "description": "Console logging (may leak sensitive data): console.log",
+      "file": "background.js",
+      "line": 48
+    },
+    {
+      "severity": "LOW",
+      "title": "Potential Data Leakage",
+      "description": "Console logging (may leak sensitive data): console.log",
+      "file": "background.js",
+      "line": 53
+    },
+    {
+      "severity": "LOW",
+      "title": "Potential Data Leakage",
+      "description": "Console logging (may leak sensitive data): console.log",
+      "file": "background.js",
+      "line": 59
+    },
+    {
+      "severity": "LOW",
+      "title": "Potential Data Leakage",
+      "description": "Console logging (may leak sensitive data): console.log",
+      "file": "background.js",
+      "line": 65
+    },
+    {
+      "severity": "LOW",
+      "title": "Potential Data Leakage",
+      "description": "Console logging (may leak sensitive data): console.log",
+      "file": "background.js",
+      "line": 71
+    },
+    {
+      "severity": "LOW",
+      "title": "Potential Data Leakage",
+      "description": "Console logging (may leak sensitive data): console.log",
+      "file": "background.js",
+      "line": 86
+    },
+    {
+      "severity": "LOW",
+      "title": "Potential Data Leakage",
+      "description": "Console logging (may leak sensitive data): console.log",
+      "file": "background.js",
+      "line": 91
+    },
+    {
+      "severity": "LOW",
+      "title": "Potential Data Leakage",
+      "description": "Console logging (may leak sensitive data): console.log",
+      "file": "background.js",
+      "line": 108
+    },
+    {
+      "severity": "LOW",
+      "title": "Potential Data Leakage",
+      "description": "Console logging (may leak sensitive data): console.log",
+      "file": "background.js",
+      "line": 125
+    },
+    {
+      "severity": "LOW",
+      "title": "Potential Data Leakage",
+      "description": "Console logging (may leak sensitive data): console.log",
+      "file": "background.js",
+      "line": 135
+    },
+    {
+      "severity": "LOW",
+      "title": "Potential Data Leakage",
+      "description": "Console logging (may leak sensitive data): console.log",
+      "file": "background.js",
+      "line": 136
+    },
+    {
+      "severity": "LOW",
+      "title": "Potential Data Leakage",
+      "description": "Console logging (may leak sensitive data): console.log",
+      "file": "background.js",
+      "line": 137
+    },
+    {
+      "severity": "LOW",
+      "title": "Potential Data Leakage",
+      "description": "Console logging (may leak sensitive data): console.log",
+      "file": "background.js",
+      "line": 140
+    },
+    {
+      "severity": "LOW",
+      "title": "Potential Data Leakage",
+      "description": "Console logging (may leak sensitive data): console.log",
+      "file": "background.js",
+      "line": 149
+    },
+    {
+      "severity": "LOW",
+      "title": "Potential Data Leakage",
+      "description": "Console logging (may leak sensitive data): console.log",
+      "file": "background.js",
+      "line": 152
+    },
+    {
+      "severity": "LOW",
+      "title": "Potential Data Leakage",
+      "description": "Console logging (may leak sensitive data): console.log",
+      "file": "background.js",
+      "line": 154
+    },
+    {
+      "severity": "LOW",
+      "title": "Potential Data Leakage",
+      "description": "Console logging (may leak sensitive data): console.log",
+      "file": "background.js",
+      "line": 157
+    },
+    {
+      "severity": "LOW",
+      "title": "Potential Data Leakage",
+      "description": "Console logging (may leak sensitive data): console.log",
+      "file": "background.js",
+      "line": 158
+    },
+    {
+      "severity": "LOW",
+      "title": "Potential Data Leakage",
+      "description": "Console logging (may leak sensitive data): console.log",
+      "file": "background.js",
+      "line": 199
+    },
+    {
+      "severity": "LOW",
+      "title": "Potential Data Leakage",
+      "description": "Console logging (may leak sensitive data): console.log",
+      "file": "background.js",
+      "line": 217
+    },
+    {
+      "severity": "LOW",
+      "title": "Potential Data Leakage",
+      "description": "Console logging (may leak sensitive data): console.log",
+      "file": "background.js",
+      "line": 219
+    },
+    {
+      "severity": "LOW",
+      "title": "Potential Data Leakage",
+      "description": "Console logging (may leak sensitive data): console.log",
+      "file": "background.js",
+      "line": 224
+    },
+    {
+      "severity": "LOW",
+      "title": "Potential Data Leakage",
+      "description": "Console logging (may leak sensitive data): console.log",
+      "file": "background.js",
+      "line": 340
+    },
+    {
+      "severity": "LOW",
+      "title": "Potential Data Leakage",
+      "description": "Console logging (may leak sensitive data): console.log",
+      "file": "background.js",
+      "line": 349
+    },
+    {
+      "severity": "LOW",
+      "title": "Potential Data Leakage",
+      "description": "Console logging (may leak sensitive data): console.log",
+      "file": "background.js",
+      "line": 354
+    },
+    {
+      "severity": "LOW",
+      "title": "Potential Data Leakage",
+      "description": "Console logging (may leak sensitive data): console.log",
+      "file": "background.js",
+      "line": 360
+    },
+    {
+      "severity": "LOW",
+      "title": "Potential Data Leakage",
+      "description": "Console logging (may leak sensitive data): console.log",
+      "file": "background.js",
+      "line": 375
+    },
+    {
+      "severity": "LOW",
+      "title": "Potential Data Leakage",
+      "description": "Console logging (may leak sensitive data): console.log",
+      "file": "background.js",
+      "line": 455
+    },
+    {
+      "severity": "LOW",
+      "title": "Potential Data Leakage",
+      "description": "Console logging (may leak sensitive data): console.log",
+      "file": "background.js",
+      "line": 459
+    },
+    {
+      "severity": "LOW",
+      "title": "Potential Data Leakage",
+      "description": "Console logging (may leak sensitive data): console.log",
+      "file": "test-click.js",
+      "line": 4
+    },
+    {
+      "severity": "LOW",
+      "title": "Potential Data Leakage",
+      "description": "Console logging (may leak sensitive data): console.log",
+      "file": "test-click.js",
+      "line": 7
+    },
+    {
+      "severity": "LOW",
+      "title": "Potential Data Leakage",
+      "description": "Console logging (may leak sensitive data): console.log",
+      "file": "test-click.js",
+      "line": 11
+    },
+    {
+      "severity": "LOW",
+      "title": "Potential Data Leakage",
+      "description": "Console logging (may leak sensitive data): console.log",
+      "file": "test-click.js",
+      "line": 16
+    },
+    {
+      "severity": "LOW",
+      "title": "Potential Data Leakage",
+      "description": "Console logging (may leak sensitive data): console.log",
+      "file": "test-click.js",
+      "line": 17
+    },
+    {
+      "severity": "LOW",
+      "title": "Potential Data Leakage",
+      "description": "Console logging (may leak sensitive data): console.log",
+      "file": "test-click.js",
+      "line": 24
+    },
+    {
+      "severity": "LOW",
+      "title": "Potential Data Leakage",
+      "description": "Console logging (may leak sensitive data): console.log",
+      "file": "test-click.js",
+      "line": 28
+    },
+    {
+      "severity": "LOW",
+      "title": "Potential Data Leakage",
+      "description": "Console logging (may leak sensitive data): console.log",
+      "file": "test-click.js",
+      "line": 33
+    },
+    {
+      "severity": "LOW",
+      "title": "Potential Data Leakage",
+      "description": "Console logging (may leak sensitive data): console.log",
+      "file": "test-click.js",
+      "line": 35
+    },
+    {
+      "severity": "LOW",
+      "title": "Potential Data Leakage",
+      "description": "Console logging (may leak sensitive data): console.log",
+      "file": "test-click.js",
+      "line": 41
+    },
+    {
+      "severity": "LOW",
+      "title": "Potential Data Leakage",
+      "description": "Console logging (may leak sensitive data): console.log",
+      "file": "test-click.js",
+      "line": 45
+    },
+    {
+      "severity": "LOW",
+      "title": "Potential Data Leakage",
+      "description": "Console logging (may leak sensitive data): console.log",
+      "file": "test-click.js",
+      "line": 48
+    },
+    {
+      "severity": "LOW",
+      "title": "Potential Data Leakage",
+      "description": "Console logging (may leak sensitive data): console.log",
+      "file": "test-click.js",
+      "line": 51
+    },
+    {
+      "severity": "LOW",
+      "title": "Potential Data Leakage",
+      "description": "Console logging (may leak sensitive data): console.log",
+      "file": "simple-test.js",
+      "line": 4
+    },
+    {
+      "severity": "LOW",
+      "title": "Potential Data Leakage",
+      "description": "Console logging (may leak sensitive data): console.log",
+      "file": "simple-test.js",
+      "line": 7
+    },
+    {
+      "severity": "LOW",
+      "title": "Potential Data Leakage",
+      "description": "Console logging (may leak sensitive data): console.log",
+      "file": "simple-test.js",
+      "line": 9
+    },
+    {
+      "severity": "LOW",
+      "title": "Potential Data Leakage",
+      "description": "Console logging (may leak sensitive data): console.log",
+      "file": "simple-test.js",
+      "line": 12
+    },
+    {
+      "severity": "LOW",
+      "title": "Potential Data Leakage",
+      "description": "Console logging (may leak sensitive data): console.log",
+      "file": "simple-test.js",
+      "line": 15
+    },
+    {
+      "severity": "LOW",
+      "title": "Potential Data Leakage",
+      "description": "Console logging (may leak sensitive data): console.log",
+      "file": "simple-test.js",
+      "line": 16
+    },
+    {
+      "severity": "LOW",
+      "title": "Potential Data Leakage",
+      "description": "Console logging (may leak sensitive data): console.log",
+      "file": "simple-test.js",
+      "line": 19
+    },
+    {
+      "severity": "LOW",
+      "title": "Potential Data Leakage",
+      "description": "Console logging (may leak sensitive data): console.log",
+      "file": "simple-test.js",
+      "line": 22
+    },
+    {
+      "severity": "LOW",
+      "title": "Potential Data Leakage",
+      "description": "Console logging (may leak sensitive data): console.log",
+      "file": "simple-test.js",
+      "line": 24
+    },
+    {
+      "severity": "LOW",
+      "title": "Potential Data Leakage",
+      "description": "Console logging (may leak sensitive data): console.log",
+      "file": "simple-test.js",
+      "line": 25
+    },
+    {
+      "severity": "LOW",
+      "title": "Potential Data Leakage",
+      "description": "Console logging (may leak sensitive data): console.log",
+      "file": "simple-test.js",
+      "line": 27
+    },
+    {
+      "severity": "LOW",
+      "title": "Potential Data Leakage",
+      "description": "Console logging (may leak sensitive data): console.log",
+      "file": "simple-test.js",
+      "line": 28
+    },
+    {
+      "severity": "LOW",
+      "title": "Potential Data Leakage",
+      "description": "Console logging (may leak sensitive data): console.log",
+      "file": "simple-test.js",
+      "line": 31
+    },
+    {
+      "severity": "LOW",
+      "title": "Potential Data Leakage",
+      "description": "Console logging (may leak sensitive data): console.log",
+      "file": "simple-test.js",
+      "line": 32
+    },
+    {
+      "severity": "LOW",
+      "title": "Potential Data Leakage",
+      "description": "Console logging (may leak sensitive data): console.log",
+      "file": "simple-test.js",
+      "line": 35
+    },
+    {
+      "severity": "LOW",
+      "title": "Potential Data Leakage",
+      "description": "Console logging (may leak sensitive data): console.log",
+      "file": "simple-test.js",
+      "line": 36
+    },
+    {
+      "severity": "LOW",
+      "title": "Potential Data Leakage",
+      "description": "Console logging (may leak sensitive data): console.log",
+      "file": "simple-test.js",
+      "line": 41
+    },
+    {
+      "severity": "LOW",
+      "title": "Potential Data Leakage",
+      "description": "Console logging (may leak sensitive data): console.log",
+      "file": "simple-test.js",
+      "line": 43
+    },
+    {
+      "severity": "LOW",
+      "title": "Potential Data Leakage",
+      "description": "Console logging (may leak sensitive data): console.log",
+      "file": "create-placeholder-icons.js",
+      "line": 45
+    },
+    {
+      "severity": "LOW",
+      "title": "Potential Data Leakage",
+      "description": "Console logging (may leak sensitive data): console.log",
+      "file": "content.js",
+      "line": 21
+    },
+    {
+      "severity": "LOW",
+      "title": "Potential Data Leakage",
+      "description": "Console logging (may leak sensitive data): console.log",
+      "file": "content.js",
+      "line": 171
+    },
+    {
+      "severity": "LOW",
+      "title": "Potential Data Leakage",
+      "description": "Console logging (may leak sensitive data): console.log",
+      "file": "content.js",
+      "line": 175
+    },
+    {
+      "severity": "LOW",
+      "title": "Potential Data Leakage",
+      "description": "Console logging (may leak sensitive data): console.log",
+      "file": "content.js",
+      "line": 186
+    },
+    {
+      "severity": "LOW",
+      "title": "Potential Data Leakage",
+      "description": "Console logging (may leak sensitive data): console.log",
+      "file": "content.js",
+      "line": 193
+    },
+    {
+      "severity": "LOW",
+      "title": "Potential Data Leakage",
+      "description": "Console logging (may leak sensitive data): console.log",
+      "file": "content.js",
+      "line": 213
+    },
+    {
+      "severity": "LOW",
+      "title": "Potential Data Leakage",
+      "description": "Console logging (may leak sensitive data): console.log",
+      "file": "content.js",
+      "line": 215
+    },
+    {
+      "severity": "LOW",
+      "title": "Potential Data Leakage",
+      "description": "Console logging (may leak sensitive data): console.log",
+      "file": "content.js",
+      "line": 235
+    },
+    {
+      "severity": "LOW",
+      "title": "Potential Data Leakage",
+      "description": "Console logging (may leak sensitive data): console.log",
+      "file": "content.js",
+      "line": 237
+    },
+    {
+      "severity": "LOW",
+      "title": "Potential Data Leakage",
+      "description": "Console logging (may leak sensitive data): console.log",
+      "file": "content.js",
+      "line": 240
+    },
+    {
+      "severity": "LOW",
+      "title": "Potential Data Leakage",
+      "description": "Console logging (may leak sensitive data): console.log",
+      "file": "content.js",
+      "line": 266
+    },
+    {
+      "severity": "LOW",
+      "title": "Potential Data Leakage",
+      "description": "Console logging (may leak sensitive data): console.log",
+      "file": "content.js",
+      "line": 273
+    },
+    {
+      "severity": "LOW",
+      "title": "Potential Data Leakage",
+      "description": "Console logging (may leak sensitive data): console.log",
+      "file": "content.js",
+      "line": 275
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+<svg width="128" height="128" viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background circle -->
+  <circle cx="64" cy="64" r="60" fill="#1DA1F2" stroke="#ffffff" stroke-width="2"/>
+  
+  <!-- Twitter/X bird silhouette -->
+  <path d="M50 45c-8 0-15 7-15 15 0 8 7 15 15 15h5c3 0 5-2 5-5v-20c0-3-2-5-5-5z" fill="#ffffff" opacity="0.3"/>
+  
+  <!-- Lightning bolt (Nostr symbol) -->
+  <path d="M75 30L55 50h10l-5 25 20-18H70l5-27z" fill="#FFD700" stroke="#ffffff" stroke-width="1"/>
+  
+  <!-- Connecting line -->
+  <path d="M60 60L68 52" stroke="#ffffff" stroke-width="2" stroke-linecap="round"/>
+  
+  <!-- Text hint -->
+  <text x="64" y="100" font-family="Arial, sans-serif" font-size="12" fill="#ffffff" text-anchor="middle" font-weight="bold">NostrX</text>
+</svg>

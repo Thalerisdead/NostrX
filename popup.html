@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NostrX Settings</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      width: 350px;
+      min-height: 400px;
+      background: #15202b;
+      color: #ffffff;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      font-size: 14px;
+      line-height: 1.4;
+    }
+
+    .header {
+      padding: 16px;
+      border-bottom: 1px solid #38444d;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .logo {
+      width: 24px;
+      height: 24px;
+      color: #7c3aed;
+    }
+
+    .title {
+      font-size: 18px;
+      font-weight: 700;
+      color: #ffffff;
+    }
+
+    .content {
+      padding: 16px;
+    }
+
+    .section {
+      margin-bottom: 24px;
+    }
+
+    .section-title {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 12px;
+      color: #ffffff;
+    }
+
+    .status-indicator {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px;
+      border-radius: 8px;
+      margin-bottom: 16px;
+    }
+
+    .status-connected {
+      background: rgba(34, 197, 94, 0.1);
+      border: 1px solid rgba(34, 197, 94, 0.3);
+    }
+
+    .status-disconnected {
+      background: rgba(239, 68, 68, 0.1);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+    }
+
+    .status-icon {
+      width: 16px;
+      height: 16px;
+    }
+
+    .status-connected .status-icon {
+      color: #22c55e;
+    }
+
+    .status-disconnected .status-icon {
+      color: #ef4444;
+    }
+
+    .status-text {
+      font-size: 13px;
+    }
+
+    .toggle-container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 0;
+    }
+
+    .toggle-label {
+      font-size: 14px;
+      color: #ffffff;
+    }
+
+    .toggle {
+      position: relative;
+      width: 44px;
+      height: 24px;
+      background: #38444d;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+
+    .toggle.active {
+      background: #7c3aed;
+    }
+
+    .toggle-slider {
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      width: 20px;
+      height: 20px;
+      background: #ffffff;
+      border-radius: 50%;
+      transition: transform 0.2s;
+    }
+
+    .toggle.active .toggle-slider {
+      transform: translateX(20px);
+    }
+
+    .relay-list {
+      max-height: 120px;
+      overflow-y: auto;
+      border: 1px solid #38444d;
+      border-radius: 8px;
+      margin-bottom: 12px;
+    }
+
+    .relay-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 12px;
+      border-bottom: 1px solid #38444d;
+      font-size: 12px;
+    }
+
+    .relay-item:last-child {
+      border-bottom: none;
+    }
+
+    .relay-url {
+      color: #8b9dc3;
+      font-family: monospace;
+      word-break: break-all;
+    }
+
+    .relay-remove {
+      background: none;
+      border: none;
+      color: #ef4444;
+      cursor: pointer;
+      padding: 4px;
+      border-radius: 4px;
+      opacity: 0.7;
+      transition: opacity 0.2s;
+    }
+
+    .relay-remove:hover {
+      opacity: 1;
+    }
+
+    .relay-add {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .relay-input {
+      flex: 1;
+      padding: 8px 12px;
+      background: #192734;
+      border: 1px solid #38444d;
+      border-radius: 6px;
+      color: #ffffff;
+      font-size: 12px;
+      font-family: monospace;
+    }
+
+    .relay-input:focus {
+      outline: none;
+      border-color: #7c3aed;
+    }
+
+    .relay-input::placeholder {
+      color: #6b7280;
+    }
+
+    .btn {
+      padding: 8px 16px;
+      border: none;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-primary {
+      background: #7c3aed;
+      color: #ffffff;
+    }
+
+    .btn-primary:hover {
+      background: #6d28d9;
+    }
+
+    .btn-secondary {
+      background: #374151;
+      color: #ffffff;
+    }
+
+    .btn-secondary:hover {
+      background: #4b5563;
+    }
+
+    .btn-danger {
+      background: #dc2626;
+      color: #ffffff;
+    }
+
+    .btn-danger:hover {
+      background: #b91c1c;
+    }
+
+    .footer {
+      padding: 16px;
+      border-top: 1px solid #38444d;
+      text-align: center;
+    }
+
+    .footer-text {
+      font-size: 11px;
+      color: #6b7280;
+    }
+
+    .scrollbar::-webkit-scrollbar {
+      width: 4px;
+    }
+
+    .scrollbar::-webkit-scrollbar-track {
+      background: #192734;
+    }
+
+    .scrollbar::-webkit-scrollbar-thumb {
+      background: #38444d;
+      border-radius: 2px;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .loading {
+      opacity: 0.6;
+      pointer-events: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div class="logo">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+      </svg>
+    </div>
+    <div class="title">NostrX</div>
+  </div>
+
+  <div class="content">
+    <!-- Nostr Extension Status -->
+    <div class="section">
+      <div class="section-title">Nostr Extension Status</div>
+      <div id="nostr-status" class="status-indicator">
+        <div class="status-icon">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="12" y1="6" x2="12" y2="12"></line>
+            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+          </svg>
+        </div>
+        <div class="status-text" id="status-text">Checking...</div>
+      </div>
+    </div>
+
+    <!-- Settings -->
+    <div class="section">
+      <div class="section-title">Settings</div>
+      
+      <div class="toggle-container">
+        <div class="toggle-label">Enable NostrX</div>
+        <div class="toggle" id="enable-toggle">
+          <div class="toggle-slider"></div>
+        </div>
+      </div>
+
+      <div class="toggle-container">
+        <div class="toggle-label">Include attribution</div>
+        <div class="toggle" id="attribution-toggle">
+          <div class="toggle-slider"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Relay Management -->
+    <div class="section">
+      <div class="section-title">Relays</div>
+      
+      <div class="relay-list scrollbar" id="relay-list">
+        <!-- Relays will be populated here -->
+      </div>
+
+      <div class="relay-add">
+        <input 
+          type="text" 
+          class="relay-input" 
+          id="relay-input" 
+          placeholder="wss://relay.example.com"
+        >
+        <button class="btn btn-primary" id="add-relay-btn">Add</button>
+      </div>
+
+      <button class="btn btn-secondary" id="reset-relays-btn">Reset to Defaults</button>
+    </div>
+  </div>
+
+  <div class="footer">
+    <div class="footer-text">
+      Cross-post your tweets to Nostr with one click
+    </div>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
