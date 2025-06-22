@@ -1,6 +1,58 @@
 // Nostr Publisher - Handles publishing events to Nostr relays
 
 class NostrPublisher {
+  static async getSettings() {
+    try {
+      console.log('⚙️ NostrX: Getting settings via bridge...');
+      
+      const response = await new Promise((resolve, reject) => {
+        const requestId = 'settings_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+        const timeout = setTimeout(() => {
+          window.removeEventListener('message', responseHandler);
+          reject(new Error('Settings request timeout'));
+        }, 5000);
+        
+        const responseHandler = (event) => {
+          if (event.data.type === 'NOSTRX_SETTINGS_RESPONSE' && event.data.requestId === requestId) {
+            clearTimeout(timeout);
+            window.removeEventListener('message', responseHandler);
+            resolve(event.data);
+          }
+        };
+        
+        window.addEventListener('message', responseHandler);
+        
+        // Send request to ISOLATED world bridge
+        window.postMessage({
+          type: 'NOSTRX_SETTINGS_REQUEST',
+          requestId: requestId
+        }, '*');
+      });
+      
+      if (response && response.success) {
+        console.log('⚙️ NostrX: Settings retrieved successfully');
+        return response.settings;
+      } else {
+        throw new Error('Failed to get settings from background script');
+      }
+    } catch (error) {
+      console.error('❌ NostrX: Error getting settings:', error);
+      console.log('⚙️ NostrX: Using fallback default settings');
+      // Fallback to default settings
+      return {
+        relays: [
+          'wss://relay.damus.io',
+          'wss://relay.nostr.info',
+          'wss://nostr-pub.wellorder.net',
+          'wss://relay.current.fyi',
+          'wss://nostr.wine'
+        ],
+        includeAttribution: true,
+        enabled: true
+      };
+    }
+  }
+  
   static getDefaultSettings() {
     return {
       relays: [
@@ -115,6 +167,43 @@ class NostrPublisher {
   static async publish(tweetData) {
     console.log('🔥 NostrX: DUAL WORLD PUBLISHING - MAIN world signs, ISOLATED world publishes');
     
+    // First verify authentication status via bridge
+    console.log('🔐 NostrX: Verifying authentication status via bridge...');
+    try {
+      const authCheck = await new Promise((resolve, reject) => {
+        const requestId = 'auth_check_pub_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+        const timeout = setTimeout(() => {
+          window.removeEventListener('message', responseHandler);
+          reject(new Error('Authentication check timeout'));
+        }, 5000);
+        
+        const responseHandler = (event) => {
+          if (event.data.type === 'NOSTRX_AUTH_CHECK_RESPONSE' && event.data.requestId === requestId) {
+            clearTimeout(timeout);
+            window.removeEventListener('message', responseHandler);
+            resolve(event.data);
+          }
+        };
+        
+        window.addEventListener('message', responseHandler);
+        
+        // Send request to ISOLATED world bridge
+        window.postMessage({
+          type: 'NOSTRX_AUTH_CHECK_REQUEST',
+          requestId: requestId
+        }, '*');
+      });
+      
+      if (!authCheck || !authCheck.authenticated) {
+        throw new Error('User not authenticated. Please authenticate with your Nostr wallet first.');
+      }
+      
+      console.log('✅ NostrX: User authenticated with pubkey:', authCheck.publicKey?.substring(0, 16) + '...');
+    } catch (error) {
+      console.error('❌ NostrX: Authentication check failed:', error);
+      throw new Error('Authentication required. Please authenticate with your Nostr wallet.');
+    }
+    
     // Check if Nostr is available
     if (typeof window.nostr === 'undefined') {
       throw new Error('window.nostr is not available. Make sure Alby is unlocked and has granted permissions to this site.');
@@ -122,7 +211,7 @@ class NostrPublisher {
     
     console.log('✅ NostrX: window.nostr found, proceeding with dual world architecture');
     
-    const settings = this.getDefaultSettings();
+    const settings = await this.getSettings();
     
     if (!settings.enabled) {
       throw new Error('NostrX is disabled');

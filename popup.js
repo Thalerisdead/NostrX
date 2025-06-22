@@ -38,13 +38,39 @@ class NostrXPopup {
 
   async init() {
     try {
+      // Check authentication status first
+      const isAuthenticated = await this.checkAuthenticationStatus();
+      if (!isAuthenticated) {
+        // Redirect to auth page
+        chrome.action.setPopup({popup: 'auth.html'});
+        window.location.href = 'auth.html';
+        return;
+      }
+
       await this.loadSettings();
       this.setupEventListeners();
       this.updateUI();
-      await this.checkNostrStatus();
     } catch (error) {
       console.error('NostrX Popup: Initialization error:', error);
       this.showError('Failed to initialize popup');
+    }
+  }
+
+  async checkAuthenticationStatus() {
+    try {
+      const result = await chrome.storage.sync.get(['nostrAuth']);
+      const auth = result.nostrAuth;
+      
+      if (!auth || !auth.authenticated || !auth.publicKey) {
+        console.log('🔐 NostrX: User not authenticated, redirecting to auth page');
+        return false;
+      }
+      
+      console.log('✅ NostrX: User authenticated with pubkey:', auth.publicKey.substring(0, 16) + '...');
+      return true;
+    } catch (error) {
+      console.error('❌ NostrX: Error checking auth status:', error);
+      return false;
     }
   }
 
@@ -123,6 +149,12 @@ class NostrXPopup {
     const resetRelaysBtn = document.getElementById('reset-relays-btn');
     resetRelaysBtn.addEventListener('click', () => {
       this.resetRelays();
+    });
+
+    // Logout button
+    const logoutBtn = document.getElementById('logout-btn');
+    logoutBtn.addEventListener('click', () => {
+      this.handleLogout();
     });
   }
 
@@ -266,136 +298,67 @@ class NostrXPopup {
     this.saveSettings();
   }
 
-  async checkNostrStatus() {
-    const statusElement = document.getElementById('nostr-status');
-    const statusText = document.getElementById('status-text');
-
+  async handleLogout() {
     try {
-      // Get current active tab
-      const tabs = await chrome.tabs.query({ active: true, currentWindow: true });
-      if (!tabs[0]) {
-        throw new Error('No active tab found');
-      }
-
-      const tab = tabs[0];
-      console.log('NostrX Popup: Current tab URL:', tab.url);
+      console.log('🔌 NostrX: Logging out...');
       
-      // Check if we're on Twitter/X
-      if (!tab.url.includes('twitter.com') && !tab.url.includes('x.com')) {
-        statusElement.className = 'status-indicator status-disconnected';
-        statusText.textContent = 'Please visit Twitter/X to use NostrX';
-        return;
-      }
-
-      console.log('NostrX Popup: Testing Nostr directly in tab:', tab.id);
-
-      // Test Nostr connection directly with retry
-      const directTest = await chrome.scripting.executeScript({
-        target: { tabId: tab.id },
-        func: () => {
-          return new Promise((resolve) => {
-            let attempts = 0;
-            const maxAttempts = 10;
-            
-            const checkNostr = () => {
-              attempts++;
-              console.log(`NostrX Popup: Attempt ${attempts} - Direct test - window.nostr type:`, typeof window.nostr);
-              
-              if (typeof window.nostr !== 'undefined' && 
-                  typeof window.nostr.getPublicKey === 'function' &&
-                  typeof window.nostr.signEvent === 'function') {
-                console.log('NostrX Popup: Alby detected and ready!');
-                resolve({ found: true, nostr: 'detected' });
-                return;
-              }
-              
-              if (attempts >= maxAttempts) {
-                console.log('NostrX Popup: Alby not found after', maxAttempts, 'attempts');
-                resolve({ found: false, error: 'window.nostr not available after waiting' });
-                return;
-              }
-              
-              // Wait 300ms and try again
-              setTimeout(checkNostr, 300);
-            };
-            
-            checkNostr();
-          });
-        }
-      });
-
-      const result = directTest[0]?.result;
-      console.log('NostrX Popup: Direct test result:', result);
-
-      if (result && result.found) {
-        statusElement.className = 'status-indicator status-connected';
-        statusText.textContent = 'Nostr extension detected and ready';
-        
-        // Update icon
-        const statusIcon = statusElement.querySelector('.status-icon');
-        // Create success status icon safely
-        // Clear existing content safely
-        while (statusIcon.firstChild) {
-          statusIcon.removeChild(statusIcon.firstChild);
-        }
-        const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-        svg.setAttribute('width', '16');
-        svg.setAttribute('height', '16');
-        svg.setAttribute('viewBox', '0 0 24 24');
-        svg.setAttribute('fill', 'none');
-        svg.setAttribute('stroke', 'currentColor');
-        svg.setAttribute('stroke-width', '2');
-        
-        const polyline = document.createElementNS('http://www.w3.org/2000/svg', 'polyline');
-        polyline.setAttribute('points', '20 6 9 17 4 12');
-        svg.appendChild(polyline);
-        statusIcon.appendChild(svg);
-      } else {
-        statusElement.className = 'status-indicator status-disconnected';
-        statusText.textContent = `Alby issue: ${result?.error || 'Unknown error'}`;
-        
-        // Update icon
-        const statusIcon = statusElement.querySelector('.status-icon');
-        // Create error status icon safely
-        // Clear existing content safely
-        while (statusIcon.firstChild) {
-          statusIcon.removeChild(statusIcon.firstChild);
-        }
-        const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-        svg.setAttribute('width', '16');
-        svg.setAttribute('height', '16');
-        svg.setAttribute('viewBox', '0 0 24 24');
-        svg.setAttribute('fill', 'none');
-        svg.setAttribute('stroke', 'currentColor');
-        svg.setAttribute('stroke-width', '2');
-        
-        const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-        circle.setAttribute('cx', '12');
-        circle.setAttribute('cy', '12');
-        circle.setAttribute('r', '10');
-        
-        const line1 = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-        line1.setAttribute('x1', '15');
-        line1.setAttribute('y1', '9');
-        line1.setAttribute('x2', '9');
-        line1.setAttribute('y2', '15');
-        
-        const line2 = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-        line2.setAttribute('x1', '9');
-        line2.setAttribute('y1', '9');
-        line2.setAttribute('x2', '15');
-        line2.setAttribute('y2', '15');
-        
-        svg.appendChild(circle);
-        svg.appendChild(line1);
-        svg.appendChild(line2);
-        statusIcon.appendChild(svg);
-      }
+      // Clear authentication state
+      await chrome.storage.sync.remove(['nostrAuth']);
+      
+      // Show success message
+      this.showSuccessMessage('Logged out successfully');
+      
+      // Redirect to auth page after short delay
+      setTimeout(() => {
+        chrome.action.setPopup({popup: 'auth.html'});
+        window.location.href = 'auth.html';
+      }, 1000);
+      
     } catch (error) {
-      console.error('NostrX Popup: Error checking Nostr status:', error);
-      statusElement.className = 'status-indicator status-disconnected';
-      statusText.textContent = `Error: ${error.message}`;
+      console.error('❌ NostrX: Error during logout:', error);
+      this.showError('Failed to logout');
     }
+  }
+
+  showSuccessMessage(message) {
+    // Create temporary success message
+    const successDiv = document.createElement('div');
+    successDiv.style.cssText = `
+      position: fixed;
+      top: 10px;
+      left: 10px;
+      right: 10px;
+      background: #22c55e;
+      color: white;
+      padding: 8px 12px;
+      border-radius: 6px;
+      font-size: 12px;
+      z-index: 1000;
+      animation: slideIn 0.3s ease-out;
+    `;
+    successDiv.textContent = message;
+
+    // Add slide-in animation if not already present
+    if (!document.querySelector('#slideInStyle')) {
+      const style = document.createElement('style');
+      style.id = 'slideInStyle';
+      style.textContent = `
+        @keyframes slideIn {
+          from { transform: translateY(-100%); opacity: 0; }
+          to { transform: translateY(0); opacity: 1; }
+        }
+      `;
+      document.head.appendChild(style);
+    }
+
+    document.body.appendChild(successDiv);
+
+    // Remove after 3 seconds
+    setTimeout(() => {
+      if (successDiv.parentNode) {
+        successDiv.remove();
+      }
+    }, 3000);
   }
 
   showError(message) {
@@ -416,15 +379,18 @@ class NostrXPopup {
     `;
     errorDiv.textContent = message;
 
-    // Add slide-in animation
-    const style = document.createElement('style');
-    style.textContent = `
-      @keyframes slideIn {
-        from { transform: translateY(-100%); opacity: 0; }
-        to { transform: translateY(0); opacity: 1; }
-      }
-    `;
-    document.head.appendChild(style);
+    // Add slide-in animation if not already present
+    if (!document.querySelector('#slideInStyle')) {
+      const style = document.createElement('style');
+      style.id = 'slideInStyle';
+      style.textContent = `
+        @keyframes slideIn {
+          from { transform: translateY(-100%); opacity: 0; }
+          to { transform: translateY(0); opacity: 1; }
+        }
+      `;
+      document.head.appendChild(style);
+    }
 
     document.body.appendChild(errorDiv);
 
@@ -432,9 +398,6 @@ class NostrXPopup {
     setTimeout(() => {
       if (errorDiv.parentNode) {
         errorDiv.remove();
-      }
-      if (style.parentNode) {
-        style.remove();
       }
     }, 3000);
   }

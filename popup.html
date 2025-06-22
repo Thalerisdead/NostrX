@@ -26,7 +26,31 @@
       border-bottom: 1px solid #38444d;
       display: flex;
       align-items: center;
+      justify-content: space-between;
       gap: 12px;
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .logout-btn {
+      background: none;
+      border: 1px solid #38444d;
+      color: #8b9dc3;
+      border-radius: 6px;
+      padding: 6px 12px;
+      font-size: 11px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .logout-btn:hover {
+      background: #374151;
+      color: #ffffff;
+      border-color: #4b5563;
     }
 
     .logo {
@@ -274,30 +298,18 @@
 </head>
 <body>
   <div class="header">
-    <div class="logo">
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-        <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
-      </svg>
+    <div class="header-left">
+      <div class="logo">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+        </svg>
+      </div>
+      <div class="title">NostrX</div>
     </div>
-    <div class="title">NostrX</div>
+    <button class="logout-btn" id="logout-btn">Logout</button>
   </div>
 
   <div class="content">
-    <!-- Nostr Extension Status -->
-    <div class="section">
-      <div class="section-title">Nostr Extension Status</div>
-      <div id="nostr-status" class="status-indicator">
-        <div class="status-icon">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <circle cx="12" cy="12" r="10"></circle>
-            <line x1="12" y1="6" x2="12" y2="12"></line>
-            <line x1="12" y1="16" x2="12.01" y2="16"></line>
-          </svg>
-        </div>
-        <div class="status-text" id="status-text">Checking...</div>
-      </div>
-    </div>
-
     <!-- Settings -->
     <div class="section">
       <div class="section-title">Settings</div>

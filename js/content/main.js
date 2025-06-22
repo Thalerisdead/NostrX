@@ -33,8 +33,52 @@ class NostrXContentScript {
 
   async start() {
     console.log('NostrX: Starting content script');
+    
+    // Check authentication status before starting
+    const isAuthenticated = await this.checkAuthenticationStatus();
+    if (!isAuthenticated) {
+      console.log('🔐 NostrX: User not authenticated, content script disabled');
+      return;
+    }
+    
     await this.processTweets();
     this.domObserver.start();
+  }
+
+  async checkAuthenticationStatus() {
+    try {
+      console.log('🔐 NostrX: Checking authentication status via bridge...');
+      
+      const result = await new Promise((resolve, reject) => {
+        const requestId = 'auth_check_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+        const timeout = setTimeout(() => {
+          window.removeEventListener('message', responseHandler);
+          reject(new Error('Authentication check timeout'));
+        }, 5000);
+        
+        const responseHandler = (event) => {
+          if (event.data.type === 'NOSTRX_AUTH_CHECK_RESPONSE' && event.data.requestId === requestId) {
+            clearTimeout(timeout);
+            window.removeEventListener('message', responseHandler);
+            resolve(event.data);
+          }
+        };
+        
+        window.addEventListener('message', responseHandler);
+        
+        // Send request to ISOLATED world bridge
+        window.postMessage({
+          type: 'NOSTRX_AUTH_CHECK_REQUEST',
+          requestId: requestId
+        }, '*');
+      });
+      
+      console.log('🔐 NostrX: Auth check result:', result);
+      return result && result.authenticated;
+    } catch (error) {
+      console.error('❌ NostrX: Error checking auth status:', error);
+      return false;
+    }
   }
 
   async processTweets() {
@@ -159,6 +203,96 @@ class NostrXContentScript {
     if (this.domObserver) {
       this.domObserver.destroy();
     }
+  }
+}
+
+// ============================================================================
+// MESSAGE HANDLING FOR AUTHENTICATION
+// ============================================================================
+
+// Listen for authentication requests from background script via bridge
+window.addEventListener('message', async (event) => {
+  // Only process messages from our bridge
+  if (event.source !== window || !event.data.type || event.data.type !== 'NOSTRX_AUTH_REQUEST_FROM_BACKGROUND') {
+    return;
+  }
+  
+  console.log('🔌 NostrX Content: Received auth request from bridge');
+  
+  try {
+    const result = await handleNostrAuthentication();
+    console.log('🔐 NostrX Content: Authentication result:', result);
+    
+    // Send result back via bridge
+    window.postMessage({
+      type: 'NOSTRX_AUTH_REQUEST',
+      requestId: event.data.requestId,
+      success: result.success,
+      publicKey: result.publicKey,
+      error: result.error
+    }, '*');
+    
+  } catch (error) {
+    console.error('❌ NostrX Content: Authentication error:', error);
+    
+    // Send error back via bridge
+    window.postMessage({
+      type: 'NOSTRX_AUTH_REQUEST',
+      requestId: event.data.requestId,
+      success: false,
+      error: error.message
+    }, '*');
+  }
+});
+
+async function handleNostrAuthentication() {
+  try {
+    console.log('🔐 NostrX Content: Starting Nostr authentication...');
+    
+    // Check if window.nostr is available
+    if (typeof window.nostr === 'undefined') {
+      throw new Error('No Nostr extension detected on this tab');
+    }
+    
+    console.log('✅ NostrX Content: window.nostr found');
+    
+    // Request public key
+    console.log('🔑 NostrX Content: Requesting public key...');
+    const pubkey = await window.nostr.getPublicKey();
+    
+    if (!pubkey) {
+      throw new Error('Failed to get public key from Nostr wallet');
+    }
+    
+    console.log('🔑 NostrX Content: Received public key:', pubkey.substring(0, 16) + '...');
+    
+    // Test signing capability
+    console.log('✍️ NostrX Content: Testing signing capability...');
+    const testEvent = {
+      kind: 1,
+      created_at: Math.floor(Date.now() / 1000),
+      tags: [],
+      content: 'NostrX Authentication Test - This verifies your wallet can sign events.',
+      pubkey: pubkey
+    };
+    
+    const signedEvent = await window.nostr.signEvent(testEvent);
+    
+    if (!signedEvent || !signedEvent.sig) {
+      throw new Error('Wallet signing test failed');
+    }
+    
+    console.log('✅ NostrX Content: Authentication successful!');
+    
+    return {
+      success: true,
+      publicKey: pubkey,
+      timestamp: Date.now()
+    };
+    
+  } catch (error) {
+    console.error('❌ NostrX Content: Authentication failed:', error);
+    throw error;
   }
 }
 

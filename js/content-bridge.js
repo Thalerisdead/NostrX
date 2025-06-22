@@ -72,6 +72,184 @@ window.addEventListener('message', async (event) => {
       }, '*');
     }
   }
+
+  if (event.data.type === 'NOSTRX_AUTH_CHECK_REQUEST') {
+    try {
+      console.log('🔐 NostrX Bridge: Received auth check request from MAIN world');
+      
+      // Check if chrome.runtime.sendMessage is available
+      if (!chrome || !chrome.runtime || !chrome.runtime.sendMessage) {
+        throw new Error('Chrome runtime not available in ISOLATED world');
+      }
+      
+      // Send auth check request to background script
+      chrome.runtime.sendMessage({ action: 'checkAuth' }, (response) => {
+        if (chrome.runtime.lastError) {
+          console.error('❌ NostrX Bridge: Auth check error:', chrome.runtime.lastError);
+          window.postMessage({
+            type: 'NOSTRX_AUTH_CHECK_RESPONSE',
+            requestId: event.data.requestId,
+            authenticated: false,
+            error: chrome.runtime.lastError.message
+          }, '*');
+          return;
+        }
+        
+        console.log('🔐 NostrX Bridge: Auth check response:', response);
+        window.postMessage({
+          type: 'NOSTRX_AUTH_CHECK_RESPONSE',
+          requestId: event.data.requestId,
+          authenticated: response?.authenticated || false,
+          publicKey: response?.publicKey,
+          error: response?.error
+        }, '*');
+      });
+      
+    } catch (error) {
+      console.error('❌ NostrX Bridge: Error in auth check bridge:', error);
+      
+      // Send error back to MAIN world
+      window.postMessage({
+        type: 'NOSTRX_AUTH_CHECK_RESPONSE',
+        requestId: event.data.requestId,
+        authenticated: false,
+        error: error.message
+      }, '*');
+    }
+  }
+
+  if (event.data.type === 'NOSTRX_SETTINGS_REQUEST') {
+    try {
+      console.log('⚙️ NostrX Bridge: Received settings request from MAIN world');
+      
+      // Check if chrome.runtime.sendMessage is available
+      if (!chrome || !chrome.runtime || !chrome.runtime.sendMessage) {
+        throw new Error('Chrome runtime not available in ISOLATED world');
+      }
+      
+      // Send settings request to background script
+      chrome.runtime.sendMessage({ action: 'getSettings' }, (response) => {
+        if (chrome.runtime.lastError) {
+          console.error('❌ NostrX Bridge: Settings request error:', chrome.runtime.lastError);
+          window.postMessage({
+            type: 'NOSTRX_SETTINGS_RESPONSE',
+            requestId: event.data.requestId,
+            success: false,
+            error: chrome.runtime.lastError.message
+          }, '*');
+          return;
+        }
+        
+        console.log('⚙️ NostrX Bridge: Settings response:', response);
+        window.postMessage({
+          type: 'NOSTRX_SETTINGS_RESPONSE',
+          requestId: event.data.requestId,
+          success: response?.success || false,
+          settings: response?.settings,
+          error: response?.error
+        }, '*');
+      });
+      
+    } catch (error) {
+      console.error('❌ NostrX Bridge: Error in settings bridge:', error);
+      
+      // Send error back to MAIN world
+      window.postMessage({
+        type: 'NOSTRX_SETTINGS_RESPONSE',
+        requestId: event.data.requestId,
+        success: false,
+        error: error.message
+      }, '*');
+    }
+  }
+
+  if (event.data.type === 'NOSTRX_AUTH_REQUEST') {
+    try {
+      console.log('🔐 NostrX Bridge: Forwarding auth request to background script...');
+      
+      // Check if chrome.runtime.sendMessage is available
+      if (!chrome || !chrome.runtime || !chrome.runtime.sendMessage) {
+        throw new Error('Chrome runtime not available in ISOLATED world');
+      }
+      
+      // Send authentication request to background script (but not for tab-based auth)
+      // Instead, send the auth result directly
+      console.log('🔐 NostrX Bridge: Sending auth success to background script...');
+      
+      // Send response back to MAIN world immediately (since auth already happened in MAIN world)
+      window.postMessage({
+        type: 'NOSTRX_AUTH_RESPONSE',
+        requestId: event.data.requestId,
+        success: event.data.success,
+        publicKey: event.data.publicKey,
+        error: event.data.error
+      }, '*');
+      
+    } catch (error) {
+      console.error('❌ NostrX Bridge: Error in auth bridge:', error);
+      
+      // Send error back to MAIN world
+      window.postMessage({
+        type: 'NOSTRX_AUTH_RESPONSE',
+        requestId: event.data.requestId,
+        success: false,
+        error: error.message
+      }, '*');
+    }
+  }
 });
 
 console.log('🌉 NostrX Bridge: Ready to bridge MAIN ↔ ISOLATED ↔ Background');
+
+// Handle messages from background script
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  if (message.action === 'ping') {
+    console.log('🏓 NostrX Bridge: Ping received');
+    sendResponse({ status: 'pong', timestamp: Date.now() });
+    return true;
+  }
+  
+  if (message.action === 'authenticateNostr') {
+    console.log('🔐 NostrX Bridge: Authentication request received from background');
+    
+    // Forward auth request to MAIN world content script
+    window.postMessage({
+      type: 'NOSTRX_AUTH_REQUEST_FROM_BACKGROUND',
+      requestId: message.requestId || 'auth_' + Date.now()
+    }, '*');
+    
+    // Listen for auth response from MAIN world and forward to background
+    const authResponseListener = (event) => {
+      if (event.source === window && 
+          event.data.type === 'NOSTRX_AUTH_REQUEST' && 
+          event.data.requestId === (message.requestId || 'auth_' + Date.now())) {
+        
+        console.log('🔐 NostrX Bridge: Received auth response from MAIN world:', event.data);
+        
+        // Clean up listener
+        window.removeEventListener('message', authResponseListener);
+        
+        // Send response back to background script
+        sendResponse({
+          success: event.data.success,
+          publicKey: event.data.publicKey,
+          error: event.data.error,
+          timestamp: Date.now()
+        });
+      }
+    };
+    
+    window.addEventListener('message', authResponseListener);
+    
+    // Timeout after 25 seconds
+    setTimeout(() => {
+      window.removeEventListener('message', authResponseListener);
+      sendResponse({
+        success: false,
+        error: 'Authentication timeout in content script'
+      });
+    }, 25000);
+    
+    return true; // Keep sendResponse callback alive
+  }
+});
