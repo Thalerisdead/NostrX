@@ -163,6 +163,100 @@ window.addEventListener('message', async (event) => {
     }
   }
 
+  // Quota check request
+  if (event.data.type === 'NOSTRX_QUOTA_CHECK_REQUEST') {
+    try {
+      console.log('📊 NostrX Bridge: Received quota check request from MAIN world');
+      
+      // Check if chrome.runtime.sendMessage is available
+      if (!chrome || !chrome.runtime || !chrome.runtime.sendMessage) {
+        throw new Error('Chrome runtime not available in ISOLATED world');
+      }
+      
+      // Send quota check request to background script
+      chrome.runtime.sendMessage({ action: 'checkQuota' }, (response) => {
+        if (chrome.runtime.lastError) {
+          console.error('❌ NostrX Bridge: Quota check error:', chrome.runtime.lastError);
+          window.postMessage({
+            type: 'NOSTRX_QUOTA_CHECK_RESPONSE',
+            requestId: event.data.requestId,
+            canPost: false,
+            error: chrome.runtime.lastError.message
+          }, '*');
+          return;
+        }
+        
+        console.log('📊 NostrX Bridge: Quota check response:', response);
+        window.postMessage({
+          type: 'NOSTRX_QUOTA_CHECK_RESPONSE',
+          requestId: event.data.requestId,
+          canPost: response?.canPost || false,
+          tier: response?.tier,
+          used: response?.used,
+          limit: response?.limit,
+          error: response?.error
+        }, '*');
+      });
+      
+    } catch (error) {
+      console.error('❌ NostrX Bridge: Error in quota check bridge:', error);
+      
+      // Send error back to MAIN world
+      window.postMessage({
+        type: 'NOSTRX_QUOTA_CHECK_RESPONSE',
+        requestId: event.data.requestId,
+        canPost: false,
+        error: error.message
+      }, '*');
+    }
+  }
+
+  // Quota increment request
+  if (event.data.type === 'NOSTRX_QUOTA_INCREMENT_REQUEST') {
+    try {
+      console.log('📊 NostrX Bridge: Received quota increment request from MAIN world');
+      
+      // Check if chrome.runtime.sendMessage is available
+      if (!chrome || !chrome.runtime || !chrome.runtime.sendMessage) {
+        throw new Error('Chrome runtime not available in ISOLATED world');
+      }
+      
+      // Send quota increment request to background script
+      chrome.runtime.sendMessage({ action: 'incrementQuota' }, (response) => {
+        if (chrome.runtime.lastError) {
+          console.error('❌ NostrX Bridge: Quota increment error:', chrome.runtime.lastError);
+          window.postMessage({
+            type: 'NOSTRX_QUOTA_INCREMENT_RESPONSE',
+            requestId: event.data.requestId,
+            success: false,
+            error: chrome.runtime.lastError.message
+          }, '*');
+          return;
+        }
+        
+        console.log('📊 NostrX Bridge: Quota increment response:', response);
+        window.postMessage({
+          type: 'NOSTRX_QUOTA_INCREMENT_RESPONSE',
+          requestId: event.data.requestId,
+          success: response?.success || false,
+          newUsed: response?.newUsed,
+          error: response?.error
+        }, '*');
+      });
+      
+    } catch (error) {
+      console.error('❌ NostrX Bridge: Error in quota increment bridge:', error);
+      
+      // Send error back to MAIN world
+      window.postMessage({
+        type: 'NOSTRX_QUOTA_INCREMENT_RESPONSE',
+        requestId: event.data.requestId,
+        success: false,
+        error: error.message
+      }, '*');
+    }
+  }
+
   if (event.data.type === 'NOSTRX_AUTH_REQUEST') {
     try {
       console.log('🔐 NostrX Bridge: Forwarding auth request to background script...');

@@ -167,7 +167,47 @@ class NostrPublisher {
   static async publish(tweetData) {
     console.log('🔥 NostrX: DUAL WORLD PUBLISHING - MAIN world signs, ISOLATED world publishes');
     
-    // First verify authentication status via bridge
+    // First check quota limits
+    console.log('📊 NostrX: Checking quota limits...');
+    try {
+      const quotaCheck = await new Promise((resolve, reject) => {
+        const requestId = 'quota_check_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+        const timeout = setTimeout(() => {
+          window.removeEventListener('message', responseHandler);
+          reject(new Error('Quota check timeout'));
+        }, 5000);
+        
+        const responseHandler = (event) => {
+          if (event.data.type === 'NOSTRX_QUOTA_CHECK_RESPONSE' && event.data.requestId === requestId) {
+            clearTimeout(timeout);
+            window.removeEventListener('message', responseHandler);
+            resolve(event.data);
+          }
+        };
+        
+        window.addEventListener('message', responseHandler);
+        
+        // Send request to ISOLATED world bridge
+        window.postMessage({
+          type: 'NOSTRX_QUOTA_CHECK_REQUEST',
+          requestId: requestId
+        }, '*');
+      });
+      
+      if (!quotaCheck.canPost) {
+        const tier = quotaCheck.tier || 'basic';
+        const used = quotaCheck.used || 0;
+        const limit = quotaCheck.limit || 3;
+        throw new Error(`Daily limit reached! You've used ${used}/${limit} posts on your ${tier} plan. Upgrade to post more.`);
+      }
+      
+      console.log('✅ NostrX: Quota check passed - can post');
+    } catch (error) {
+      console.error('❌ NostrX: Quota check failed:', error);
+      throw error;
+    }
+    
+    // Then verify authentication status via bridge
     console.log('🔐 NostrX: Verifying authentication status via bridge...');
     try {
       const authCheck = await new Promise((resolve, reject) => {
@@ -278,6 +318,40 @@ class NostrPublisher {
       
       const successCount = response.successCount || 0;
       console.log('🎉 NostrX: Published successfully via bridge to', successCount, 'out of', settings.relays.length, 'relays');
+      
+      // Increment usage quota after successful posting
+      if (successCount > 0) {
+        console.log('📊 NostrX: Incrementing usage quota...');
+        try {
+          await new Promise((resolve, reject) => {
+            const requestId = 'quota_increment_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+            const timeout = setTimeout(() => {
+              window.removeEventListener('message', responseHandler);
+              reject(new Error('Quota increment timeout'));
+            }, 5000);
+            
+            const responseHandler = (event) => {
+              if (event.data.type === 'NOSTRX_QUOTA_INCREMENT_RESPONSE' && event.data.requestId === requestId) {
+                clearTimeout(timeout);
+                window.removeEventListener('message', responseHandler);
+                resolve(event.data);
+              }
+            };
+            
+            window.addEventListener('message', responseHandler);
+            
+            // Send request to ISOLATED world bridge
+            window.postMessage({
+              type: 'NOSTRX_QUOTA_INCREMENT_REQUEST',
+              requestId: requestId
+            }, '*');
+          });
+          console.log('📊 NostrX: Usage quota incremented successfully');
+        } catch (error) {
+          console.error('❌ NostrX: Failed to increment usage quota:', error);
+          // Don't fail the whole operation for quota tracking issues
+        }
+      }
       
       return response;
       

@@ -3,6 +3,7 @@
 class NostrXPopup {
   constructor() {
     this.settings = null;
+    this.quotaManager = new QuotaManager();
     this.init();
   }
   // Comprehensive relay URL validation
@@ -115,6 +116,14 @@ class NostrXPopup {
   }
 
   setupEventListeners() {
+    // Tier selection
+    const tierOptions = document.querySelectorAll('.tier-option');
+    tierOptions.forEach(option => {
+      option.addEventListener('click', () => {
+        this.handleTierSelection(option);
+      });
+    });
+
     // Enable toggle
     const enableToggle = document.getElementById('enable-toggle');
     enableToggle.addEventListener('click', () => {
@@ -158,7 +167,10 @@ class NostrXPopup {
     });
   }
 
-  updateUI() {
+  async updateUI() {
+    // Update tier selection and usage
+    await this.updateTierDisplay();
+    
     // Update toggles
     const enableToggle = document.getElementById('enable-toggle');
     const attributionToggle = document.getElementById('attribution-toggle');
@@ -359,6 +371,65 @@ class NostrXPopup {
         successDiv.remove();
       }
     }, 3000);
+  }
+
+  async handleTierSelection(tierOption) {
+    const tier = tierOption.dataset.tier;
+    
+    // Remove selected class from all options
+    document.querySelectorAll('.tier-option').forEach(option => {
+      option.classList.remove('selected');
+    });
+    
+    // Add selected class to clicked option
+    tierOption.classList.add('selected');
+    
+    // Update tier in storage
+    await this.quotaManager.setTier(tier);
+    
+    // Update usage display
+    await this.updateTierDisplay();
+    
+    this.showSuccessMessage(`Switched to ${tier.charAt(0).toUpperCase() + tier.slice(1)} plan`);
+  }
+
+  async updateTierDisplay() {
+    const quotaInfo = await this.quotaManager.getQuotaInfo();
+    
+    // Update selected tier option
+    document.querySelectorAll('.tier-option').forEach(option => {
+      option.classList.remove('selected');
+      if (option.dataset.tier === quotaInfo.tier) {
+        option.classList.add('selected');
+      }
+    });
+    
+    // Update usage display
+    const usageCount = document.getElementById('usage-count');
+    const usageLimit = document.getElementById('usage-limit');
+    const usageProgress = document.getElementById('usage-progress');
+    
+    if (usageCount && usageLimit && usageProgress) {
+      usageCount.textContent = quotaInfo.used;
+      usageLimit.textContent = quotaInfo.limit;
+      
+      // Calculate progress percentage
+      let progressPercent = 0;
+      if (quotaInfo.limit !== '∞' && quotaInfo.limit > 0) {
+        progressPercent = (quotaInfo.used / quotaInfo.limit) * 100;
+      }
+      
+      usageProgress.style.width = `${Math.min(progressPercent, 100)}%`;
+      
+      // Change color based on usage
+      if (progressPercent >= 90) {
+        usageProgress.style.background = '#dc2626'; // Red
+      } else if (progressPercent >= 75) {
+        usageProgress.style.background = '#f59e0b'; // Orange
+      } else {
+        usageProgress.style.background = '#7c3aed'; // Purple
+      }
+    }
   }
 
   showError(message) {

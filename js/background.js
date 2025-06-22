@@ -96,6 +96,36 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     
     return true;
   }
+
+  // Handle quota check requests
+  if (message.action === 'checkQuota') {
+    handleQuotaCheck()
+      .then(result => {
+        console.log('📊 NostrX Background: Quota check result:', result);
+        sendResponse(result);
+      })
+      .catch(error => {
+        console.error('❌ NostrX Background: Quota check error:', error);
+        sendResponse({ canPost: false, error: error.message });
+      });
+    
+    return true;
+  }
+
+  // Handle quota increment requests
+  if (message.action === 'incrementQuota') {
+    handleQuotaIncrement()
+      .then(result => {
+        console.log('📊 NostrX Background: Quota increment result:', result);
+        sendResponse(result);
+      })
+      .catch(error => {
+        console.error('❌ NostrX Background: Quota increment error:', error);
+        sendResponse({ success: false, error: error.message });
+      });
+    
+    return true;
+  }
 });
 
 async function handlePublishToRelays(signedEvent, relays) {
@@ -450,6 +480,139 @@ async function handleNostrAuthentication() {
     
   } catch (error) {
     console.error('❌ NostrX Background: Authentication failed:', error);
+    throw error;
+  }
+}
+
+// Import QuotaManager for use in background script
+class QuotaManager {
+  constructor() {
+    this.tierLimits = {
+      basic: 3,
+      premium: 25,
+      advanced: -1 // unlimited
+    };
+  }
+
+  async getCurrentTier() {
+    try {
+      const result = await chrome.storage.sync.get(['userTier']);
+      return result.userTier || 'basic';
+    } catch (error) {
+      console.error('Error getting current tier:', error);
+      return 'basic';
+    }
+  }
+
+  async getTodaysUsage() {
+    try {
+      const today = new Date().toDateString();
+      const result = await chrome.storage.sync.get(['quotaData']);
+      const quotaData = result.quotaData || {};
+      
+      if (quotaData.date !== today) {
+        // Reset for new day
+        const newQuotaData = {
+          date: today,
+          used: 0
+        };
+        await chrome.storage.sync.set({ quotaData: newQuotaData });
+        return 0;
+      }
+      
+      return quotaData.used || 0;
+    } catch (error) {
+      console.error('Error getting today\'s usage:', error);
+      return 0;
+    }
+  }
+
+  async incrementUsage() {
+    try {
+      const today = new Date().toDateString();
+      const result = await chrome.storage.sync.get(['quotaData']);
+      const quotaData = result.quotaData || { date: today, used: 0 };
+      
+      if (quotaData.date !== today) {
+        quotaData.date = today;
+        quotaData.used = 0;
+      }
+      
+      quotaData.used += 1;
+      await chrome.storage.sync.set({ quotaData });
+      
+      console.log(`Usage incremented to: ${quotaData.used}`);
+      return quotaData.used;
+    } catch (error) {
+      console.error('Error incrementing usage:', error);
+      return null;
+    }
+  }
+
+  async canPost() {
+    try {
+      const tier = await this.getCurrentTier();
+      const limit = this.tierLimits[tier];
+      
+      // Unlimited tier
+      if (limit === -1) return true;
+      
+      const used = await this.getTodaysUsage();
+      return used < limit;
+    } catch (error) {
+      console.error('Error checking if can post:', error);
+      return false;
+    }
+  }
+
+  async getQuotaInfo() {
+    try {
+      const tier = await this.getCurrentTier();
+      const limit = this.tierLimits[tier];
+      const used = await this.getTodaysUsage();
+      
+      return {
+        tier,
+        limit: limit === -1 ? '∞' : limit,
+        used,
+        remaining: limit === -1 ? -1 : Math.max(0, limit - used),
+        canPost: limit === -1 ? true : used < limit
+      };
+    } catch (error) {
+      console.error('Error getting quota info:', error);
+      return {
+        tier: 'basic',
+        limit: 3,
+        used: 0,
+        remaining: 3,
+        canPost: true
+      };
+    }
+  }
+}
+
+const quotaManager = new QuotaManager();
+
+async function handleQuotaCheck() {
+  try {
+    console.log('📊 NostrX Background: Checking quota...');
+    const quotaInfo = await quotaManager.getQuotaInfo();
+    console.log('📊 NostrX Background: Quota info:', quotaInfo);
+    return quotaInfo;
+  } catch (error) {
+    console.error('❌ NostrX Background: Error checking quota:', error);
+    throw error;
+  }
+}
+
+async function handleQuotaIncrement() {
+  try {
+    console.log('📊 NostrX Background: Incrementing quota...');
+    const newUsed = await quotaManager.incrementUsage();
+    console.log('📊 NostrX Background: Quota incremented to:', newUsed);
+    return { success: true, newUsed };
+  } catch (error) {
+    console.error('❌ NostrX Background: Error incrementing quota:', error);
     throw error;
   }
 }
